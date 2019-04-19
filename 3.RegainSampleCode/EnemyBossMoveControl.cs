@@ -55,7 +55,7 @@ public class EnemyBossMoveControl : MonoBehaviour {
     BoxCollider EnemySword;
 
     private int AttackHash = 0;
-    // Use this for initialization
+  
     void Awake()
     {
         this.CharacterAnim = this.GetComponent<Animator>();                                                 //애니메이터 가져오기
@@ -107,7 +107,7 @@ public class EnemyBossMoveControl : MonoBehaviour {
         }
 
 
-        if (OnOff == false && targetPlayer.activeSelf == true)                                                 //코루틴 함수 OnIOff
+        if (OnOff == false && targetPlayer.activeSelf == true)                                              //코루틴 함수 OnIOff
         {
             OnOff = true;
             AnimationCoroutine = StartCoroutine(EenmyAccessPlayer());
@@ -184,9 +184,9 @@ public class EnemyBossMoveControl : MonoBehaviour {
         while (this.EnemyHumanDistance <= EnemyHumanSwordAttackDistance &&
             targetPlayer.activeSelf == true)                                                               //접근 공격 범위 안에 들어 오면 공격
         {
-            SpeedCount = 0;                                                                                 //스피드 카운트 0으로 초기화
-            this.moveSpeed = 0.0f;                                                           //움직임 0
-            CharacterAnim.SetBool("Attack", true);                                                              //desh_front 스탑
+            SpeedCount = 0;                                                                                //스피드 카운트 0으로 초기화
+            this.moveSpeed = 0.0f;                                                                         //움직임 0
+            CharacterAnim.SetBool("Attack", true);                                                         //desh_front 스탑
 
             yield return null;
 
