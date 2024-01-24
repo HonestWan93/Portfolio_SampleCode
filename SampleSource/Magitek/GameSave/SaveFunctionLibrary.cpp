@@ -7,7 +7,6 @@
 TArray<FPostInfoV1> USaveFunctionLibrary::ConvertPostInfoListToSaveStructArray(const TArray<FPostInfo>& PostInfoList)
 {
 	TArray<FPostInfoV1> postInfoListV1;
-
 	for (auto postInfo : PostInfoList)
 	{
 		postInfoListV1.Add(ConvertPostInfoToSaveStruct(postInfo));
@@ -19,7 +18,6 @@ TArray<FPostInfoV1> USaveFunctionLibrary::ConvertPostInfoListToSaveStructArray(c
 TArray<FPostInfo> USaveFunctionLibrary::ConvertSavePostInfoListToRuntimeStructArray(const TArray<FPostInfoV1>& PostInfoListV1)
 {
 	TArray<FPostInfo> postInfoList;
-
 	for (auto postInfoV1 : PostInfoListV1)
 	{
 		postInfoList.Add(ConvertSavePostInfoToRuntimeStruct(postInfoV1));
@@ -59,7 +57,6 @@ FPostInfo USaveFunctionLibrary::ConvertSavePostInfoToRuntimeStruct(const FPostIn
 TArray<FPostItemV1> USaveFunctionLibrary::ConvertPostItemArrayToSaveStructArray(TArray<FPostItem> PostItemArray)
 {
 	TArray<FPostItemV1> postItemV1Array;
-
 	for (auto postItem : PostItemArray)
 	{
 		postItemV1Array.Add(ConvertPostItemToSaveStruct(postItem));
@@ -71,7 +68,6 @@ TArray<FPostItemV1> USaveFunctionLibrary::ConvertPostItemArrayToSaveStructArray(
 TArray<FPostItem> USaveFunctionLibrary::ConvertSavePostItemArrayToRuntimeStructArray(TArray<FPostItemV1> PostItemV1Array)
 {
 	TArray<FPostItem> postItemArray;
-
 	for (auto postItemV1 : PostItemV1Array)
 	{
 		postItemArray.Add(ConvertSavePostItemToRuntimeStruct(postItemV1));
