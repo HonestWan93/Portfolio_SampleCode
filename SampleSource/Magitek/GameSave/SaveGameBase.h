@@ -51,23 +51,3 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TArray<FPostInfoV1> PlayerOpenedPostInfoListV1;
 };
-
-//옵션 셋팅 저장용
-UCLASS()
-class MAGITEK_API USaveGameOption : public USaveGameBase
-{
-	GENERATED_BODY()
-
-public:
-
-	USaveGameOption()
-	{
-
-	}
-
-public:
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	FOptionInfo OptionInfo;
-
-};

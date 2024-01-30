@@ -35,14 +35,14 @@ void UMagitekGameInstance::SetAccountInfo(const struct FAccountInfo& InAccountIn
 	AccountInfo = InAccountInfo;
 
 
-	if (SaveGameOption == nullptr)
+	if (SaveGameBase == nullptr)
 	{
-		SaveGameOption = Cast<USaveGameOption>(UGameplayStatics::CreateSaveGameObject(USaveGameOption::StaticClass()));
+		SaveGameBase = Cast<USaveGameBase>(UGameplayStatics::CreateSaveGameObject(USaveGameBase::StaticClass()));
 	}
 
-	SaveGameOption->UserNickname = AccountInfo.Guest;
+	SaveGameBase->UserNickname = AccountInfo.Guest;
 
-	SaveOption();
+	SaveBase();
 }
 
 FAccountInfo UMagitekGameInstance::GetAccountInfo()
@@ -53,55 +53,35 @@ FAccountInfo UMagitekGameInstance::GetAccountInfo()
 void UMagitekGameInstance::InitOption()
 {
 
-	FString saveSlotName = "SaveOption";
+	FString saveSlotName = "SaveBase";
 	int32 slotIndex = 0;
 	
-	SaveGameOption = Cast<USaveGameOption>(UGameplayStatics::LoadGameFromSlot(saveSlotName, slotIndex));
+	SaveGameBase = Cast<USaveGameBase>(UGameplayStatics::LoadGameFromSlot(saveSlotName, slotIndex));
 
-	if (SaveGameOption == nullptr)
+	if (SaveGameBase == nullptr)
 	{
-		SaveGameOption = Cast<USaveGameOption>(UGameplayStatics::CreateSaveGameObject(USaveGameOption::StaticClass()));
+		SaveGameBase = Cast<USaveGameBase>(UGameplayStatics::CreateSaveGameObject(USaveGameBase::StaticClass()));
 	}
 
-	if (SaveGameOption->UserNickname.IsEmpty() == false)
+	if (SaveGameBase->UserNickname.IsEmpty() == false)
 	{
-		AccountInfo.Guest = SaveGameOption->UserNickname;
+		AccountInfo.Guest = SaveGameBase->UserNickname;
 	}
 }
 
-//옵션 정보 저장
-void UMagitekGameInstance::SaveOption()
+//유저 기본 정보 저장
+void UMagitekGameInstance::SaveBase()
 {
-	if (SaveGameOption == nullptr)
+	if (SaveGameBase == nullptr)
 	{
 		return;
 	}
 
-	FString saveSlotName = "SaveOption";
+	FString saveSlotName = "SaveBase";
 	int32 slotIndex = 0;
 
-	if (UGameplayStatics::SaveGameToSlot(SaveGameOption, saveSlotName, slotIndex))
+	if (UGameplayStatics::SaveGameToSlot(SaveGameBase, saveSlotName, slotIndex))
 	{
-		UE_LOG(LogTemp, Log, TEXT("SaveOption Success"));
+		UE_LOG(LogTemp, Log, TEXT("SaveBase Success"));
 	}
-}
-
-void UMagitekGameInstance::SetOptionInfo(const FOptionInfo& OptionInfo)
-{
-	if (SaveGameOption == nullptr)
-	{
-		return;
-	}
-
-	SaveGameOption->OptionInfo = OptionInfo;
-}
-
-FOptionInfo UMagitekGameInstance::GetOptionInfo()
-{
-	if (SaveGameOption == nullptr)
-	{
-		return FOptionInfo();
-	}
-
-	return SaveGameOption->OptionInfo;
 }

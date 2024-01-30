@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameSave/SaveGameBase.h"
 #include "Engine/GameInstance.h"
+#include "Kismet/BlueprintPlatformLibrary.h"
 #include "MagitekGameInstance.generated.h"
 
 /**
@@ -12,7 +13,7 @@
  */
 
 UCLASS()
-class MAGITEK_API UMagitekGameInstance : public UGameInstance
+class MAGITEK_API UMagitekGameInstance : public UPlatformGameInstance
 {
 	GENERATED_BODY()
 
@@ -30,20 +31,14 @@ public:
 	FAccountInfo GetAccountInfo();
 
 	UFUNCTION(BlueprintCallable)
-	void SaveOption();
-
-	UFUNCTION(BlueprintCallable)
-	void SetOptionInfo(const FOptionInfo& OptionInfo);
-
-	UFUNCTION(BlueprintPure)
-	FOptionInfo GetOptionInfo();
+	void SaveBase();
 
 private:
 
 	struct FAccountInfo AccountInfo;
 
 	UPROPERTY()
-	USaveGameOption* SaveGameOption;
+	USaveGameBase* SaveGameBase;
 private:
 
 	UFUNCTION(BlueprintCallable)
