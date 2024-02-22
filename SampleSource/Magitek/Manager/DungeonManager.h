@@ -22,22 +22,22 @@ protected:
 
 public:	
 
-	//각 던전 등록
+	//던전들 등록
 	UFUNCTION(BlueprintCallable)
-	void RegisterDungeon();
+	void RegisterDungeons();
 
-	//각 던전에 맞는 던전 룸 등록, 던전 인포 DT에서 사용되는 태그
+	//던전에 맞는 던전 방들 등록
 	UFUNCTION(BlueprintCallable)
-	void RegisterDungeonRoom();
+	void RegisterDungeonRooms();
 
 	UFUNCTION(BlueprintPure)
-	TArray<class ADungeon*> GetDungeonList();
+	TArray<class ADungeon*> GetDungeons() const;
 
 	UFUNCTION(BlueprintPure)
-	TArray<AActor*> GetDuegoneRoomList();
+	TArray<ADungeonRoomBase*> GetDuegoneRooms() const;
 
 	UFUNCTION(BlueprintCallable)
-	void GetDungeonRoomSnapsDirection(class ADungeonRoomBase* DungeonRoom, TMap<EDirection, USnapConnectionComponent*>& OutDungeonRoomSnapsDirection);
+	void GetDungeonRoomSnapsDirection(class ADungeonRoomBase* DungeonRoom, TMap<EDirection, USnapConnectionComponent*>& OutDungeonRoomSnapsDirection) const;
 
 public:
 
@@ -47,9 +47,9 @@ public:
 private:
 
 	UPROPERTY()
-	TArray<class ADungeon*> DungeonList;
+	TArray<class ADungeon*> Dungeons;
 
 	UPROPERTY()
-	TArray<AActor*> DuegoneRoomList;
+	TArray<ADungeonRoomBase*> DuegoneRooms;
 
 };

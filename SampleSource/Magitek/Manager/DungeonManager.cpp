@@ -22,12 +22,11 @@ void ADungeonManager::BeginPlay()
 {
 	Super::BeginPlay();
 
-	RegisterDungeon();
-	//RegisterDungeonRoom();
+	RegisterDungeons();
 }
 
 //각 던전 등록
-void ADungeonManager::RegisterDungeon()
+void ADungeonManager::RegisterDungeons()
 {
 	TArray<AActor*> outActors;
 	outActors.Empty();
@@ -36,13 +35,15 @@ void ADungeonManager::RegisterDungeon()
 	for (auto dungeonActor : outActors)
 	{
 		ADungeon* dungeon = Cast<ADungeon>(dungeonActor);
-		DungeonList.Add(dungeon);
+		Dungeons.Add(dungeon);
 	}
 }
 
-//각 던전에 맞는 던전 룸 등록
-void ADungeonManager::RegisterDungeonRoom()
+//각 던전에 맞는 방들 등록
+void ADungeonManager::RegisterDungeonRooms()
 {
+	DuegoneRooms.Empty();
+
 	TArray<AActor*> outActors;
 	outActors.Empty();
 
@@ -51,50 +52,57 @@ void ADungeonManager::RegisterDungeonRoom()
 	for (auto roomActor : outActors)
 	{
 		ADungeonRoomBase* dungeonRoom = Cast<ADungeonRoomBase>(roomActor);
-		dungeonRoom->CoverDungeonStageTagInActor();
-		DuegoneRoomList.Add(dungeonRoom);
+		DuegoneRooms.Add(dungeonRoom);
+	}
+
+	for (auto duegoneRoom : DuegoneRooms)
+	{
+		// 던전 이웃 방들 등록
+		duegoneRoom->RegisterNeighboringRooms();
+
+		//던전 방에 문들 등록
+		duegoneRoom->RegisterRoomDoors();
 	}
 }
 
-TArray<class ADungeon*> ADungeonManager::GetDungeonList()
+TArray<class ADungeon*> ADungeonManager::GetDungeons() const
 {
-	return DungeonList;
+	return Dungeons;
 }
 
-TArray<AActor*> ADungeonManager::GetDuegoneRoomList()
+TArray<ADungeonRoomBase*> ADungeonManager::GetDuegoneRooms() const
 {
-	return DuegoneRoomList;
+	return DuegoneRooms;
 }
 
-void ADungeonManager::GetDungeonRoomSnapsDirection(ADungeonRoomBase* DungeonRoom, TMap<EDirection, USnapConnectionComponent*>& OutDungeonRoomSnapsDirection)
+void ADungeonManager::GetDungeonRoomSnapsDirection(ADungeonRoomBase* DungeonRoom, TMap<EDirection, USnapConnectionComponent*>& OutDungeonRoomSnapsDirection) const
 {
+	//우선 첫 스타트 맵은 회전이 안되게 막자
     TMap<EDirection, USnapConnectionComponent*> dungeonRoomSnapsDirection;
-	
-    for (auto snapConncetion : DungeonRoom->GetSnapConnectionComponentList())
+    for (auto snapConncetion : DungeonRoom->GetDoorSnapConnectionComponents())
     {
         //door 일 경우에만
         if (snapConncetion->ConnectionState == ESnapConnectionState::Door)
         {
 			//월드 기준
 			// 앞을 보고 있으니까 이 스냅션은 앞에 있다
-			FVector forwardVector = snapConncetion->GetForwardVector();
-			
-			if (forwardVector.Equals(FVector::ForwardVector,0.1f))
+			FVector ForwardVector = snapConncetion->GetForwardVector();			
+			if (ForwardVector.Equals(FVector::ForwardVector,0.1f))
 			{
 				dungeonRoomSnapsDirection.Add(EDirection::Up, snapConncetion);
 			}
 			// 뒤를 보고 있으니까 이 스냅션은 뒤에 있다.
-			else if (forwardVector.Equals(FVector::BackwardVector, 0.1f))
+			else if (ForwardVector.Equals(FVector::BackwardVector, 0.1f))
 			{
 				dungeonRoomSnapsDirection.Add(EDirection::Down, snapConncetion);
 			}
 			// 오른쪽을 보고 있으니까 이 스냅션은 오른쪽에 있다.
-			else if (forwardVector.Equals(FVector::RightVector, 0.1f))
+			else if (ForwardVector.Equals(FVector::RightVector, 0.1f))
 			{
 				dungeonRoomSnapsDirection.Add(EDirection::Right, snapConncetion);
 			}
 			// 왼쪽을 보고 있으니까 이 스냅션은 왼쪽에 있다.
-			else if (forwardVector.Equals(FVector::LeftVector, 0.1f))
+			else if (ForwardVector.Equals(FVector::LeftVector, 0.1f))
 			{
 				dungeonRoomSnapsDirection.Add(EDirection::Left, snapConncetion);
 			}

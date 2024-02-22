@@ -10,6 +10,7 @@
 class ASnapConnectionActor;
 class USnapConnectionComponent;
 class UDungeonStreamingChunk;
+class ADoorBase;
 
 UCLASS()
 class MAGITEK_API ADungeonRoomBase : public AActor
@@ -24,46 +25,67 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
 public:
-	// 던전 태그들 덮어 씌우기
-	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent)
-	void CoverDungeonStageTagInActor();
 
 	UFUNCTION(BlueprintPure)
-	TArray<class USnapConnectionComponent*> GetSnapConnectionComponentList();
+	TArray<class USnapConnectionComponent*> GetDoorSnapConnectionComponents() const;
 
 	UFUNCTION(BlueprintPure)
-	TArray<class ADungeonRoomBase*> GetNeighboringRooms();
+	TArray<class ADungeonRoomBase*> GetNeighboringRooms() const;
+
+	UFUNCTION(BlueprintPure)
+	TArray<class ADoorBase*> GetDungeonDoors() const;
 
 	UFUNCTION(BlueprintCallable)
-	void ConvertChunksToDungeonRooms(const UClass* ActorClass);
+	void RegisterNeighboringRooms();
+
+	UFUNCTION(BlueprintCallable)
+	void RegisterRoomDoors();
 
 	UFUNCTION(BlueprintCallable)
 	void FindConnectedNeighboringRoom(class USnapConnectionComponent* InSnapConnectionComponent, class ADungeonRoomBase*& OutNeighboringRoom);
 
-public:
+	UFUNCTION(BlueprintCallable)
+	void SetRoomClear(bool Value);
 
-	//방문 여부
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	bool bVisited = false;
+	UFUNCTION(BlueprintPure)
+	bool GetRoomClear() const;
+
+	UFUNCTION(BlueprintCallable)
+	void OpenDungeonDoors();
+
+	UFUNCTION(BlueprintCallable)
+	void OpenNeighboringDungeonDoors();
+
+	UFUNCTION(BlueprintCallable)
+	void CloseDungeonDoors();
+
+	UFUNCTION(BlueprintCallable)
+	void CloseNeighboringDungeonDoors();
+
+public:
 
 	//연결 지점 리스트
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	TArray<class ASnapConnectionActor*> SnapConnectionActorList;
+	TArray<class ASnapConnectionActor*> SnapConnectionActors;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TSet<UDungeonStreamingChunk*> Chunks;
 
-private:
+	// 클리어 여부
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	bool bRoomClear = false;
+
+private:	
 
 	UPROPERTY()
-	TArray<class USnapConnectionComponent*> SnapConnectionComponentList;
+	TArray<class USnapConnectionComponent*> DoorSnapConnectionComponents;
 
 	//이웃 던전 방
 	UPROPERTY()
 	TArray<class ADungeonRoomBase*> NeighboringRooms;
+
+	//던전 방 안에 문들
+	UPROPERTY()
+	TArray<class ADoorBase*> DungeonDoors;
 };
