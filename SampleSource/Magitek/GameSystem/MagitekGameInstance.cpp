@@ -40,7 +40,20 @@ void UMagitekGameInstance::SetAccountInfo(const struct FAccountInfo& InAccountIn
 		SaveGameBase = Cast<USaveGameBase>(UGameplayStatics::CreateSaveGameObject(USaveGameBase::StaticClass()));
 	}
 
-	SaveGameBase->UserNickname = AccountInfo.Guest;
+	SaveGameBase->UserNickname = AccountInfo.Nickname;
+
+	if (AccountInfo.Google.IsEmpty() == false)
+	{
+		SaveGameBase->PlatformUID = AccountInfo.Google;
+	}
+	else if (AccountInfo.Apple.IsEmpty() == false)
+	{
+		SaveGameBase->PlatformUID = AccountInfo.Apple;
+	}
+	else if (AccountInfo.Guest.IsEmpty() == false)
+	{
+		SaveGameBase->PlatformUID = AccountInfo.Guest;
+	}
 
 	SaveBase();
 }
@@ -48,6 +61,16 @@ void UMagitekGameInstance::SetAccountInfo(const struct FAccountInfo& InAccountIn
 FAccountInfo UMagitekGameInstance::GetAccountInfo()
 {
 	return AccountInfo;
+}
+
+FString UMagitekGameInstance::GetAccountUID()
+{
+	if (SaveGameBase == nullptr)
+	{
+		return "";
+	}
+
+	return SaveGameBase->PlatformUID;
 }
 
 void UMagitekGameInstance::InitOption()
@@ -61,12 +84,7 @@ void UMagitekGameInstance::InitOption()
 	if (SaveGameBase == nullptr)
 	{
 		SaveGameBase = Cast<USaveGameBase>(UGameplayStatics::CreateSaveGameObject(USaveGameBase::StaticClass()));
-	}
-
-	if (SaveGameBase->UserNickname.IsEmpty() == false)
-	{
-		AccountInfo.Guest = SaveGameBase->UserNickname;
-	}
+	}	
 }
 
 //유저 기본 정보 저장

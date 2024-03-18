@@ -27,6 +27,10 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	FString UserNickname;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	FString PlatformUID;
+
 };
 
 //로컬 게임 저장용

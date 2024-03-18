@@ -4,12 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "MagitekStructDefine.h"
+#include "SaveMagitekStructDefine.h"
 #include "Components/ActorComponent.h"
 #include "LocalDataComponent.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnNotifyUpdatePostData);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnNotifyFirstAchievementData);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnNotifyUpdateMyAchievementData, int32, AchievementID);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnNotifyUpdateMyAchievementData, FAchievementHistory, Achievement);
 
 UCLASS(BlueprintType, Blueprintable, ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class MAGITEK_API ULocalDataComponent : public UActorComponent
@@ -100,16 +101,45 @@ public:
 	TMap<int32, FString> GetCachedFirstAchievement();
 
 	UFUNCTION(BlueprintCallable)
-	void AddMyAchievemen(int AchievementId);
+	void AddMyAchievement(const FAchievementHistory& Achievement);
 
 	UFUNCTION(Blueprintpure)
-	TArray<int32>& GetCachedMyAchievement();
+	TMap<int32, FAchievementHistory>& GetCachedMyAchievement();
 
 	UFUNCTION(BlueprintCallable)
-	void SetCachedMyAchievement(const TArray<int32>& InCachedMyAchievement);
+	void SetCachedMyAchievement(const TMap<int32, FAchievementHistory>& InCachedMyAchievement);
 
 #pragma endregion
 
+#pragma region IAP
+	UFUNCTION(BlueprintCallable) 
+	void AddIAPLog(int32 ShopID, int32 Timestamp)
+	{
+		if ( CachedIAP.Contains(ShopID) == false )
+		{
+			CachedIAP.Add(ShopID, TArray<FIAPLog>());
+		}
+
+		FIAPLog Log;
+		Log.ShopID = ShopID;
+		Log.Timestamp = Timestamp;
+		
+		CachedIAP[ShopID].EmplaceAt(0, Log);
+	}
+
+	UFUNCTION(Blueprintpure)
+	bool GetIAPLogs(int32 ShopID, TArray<FIAPLog>& OutLogs)
+	{
+		TArray<FIAPLog>* Logs = CachedIAP.Find(ShopID);
+
+		if ( Logs != nullptr )
+		{
+			OutLogs = *Logs;
+			return true;
+		}
+		return false;
+	}
+#pragma endregion 	
 private:
 
 #pragma region Post
@@ -135,8 +165,11 @@ private:
 	TMap<int32, FString> CachedFirstAchievement;
 
 	// 내가 클리어한 업적 데이터 캐싱
-	TArray<int32> CachedMyAchievement; 
+	TMap<int32, FAchievementHistory> CachedMyAchievement; 
 
 #pragma endregion
 
+#pragma region IAP
+	TMap<int32, TArray<FIAPLog>> CachedIAP;
+#pragma endregion 	
 };

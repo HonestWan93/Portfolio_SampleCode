@@ -30,6 +30,9 @@ public:
 	UFUNCTION(BlueprintPure)
 	FAccountInfo GetAccountInfo();
 
+	UFUNCTION(BlueprintPure)
+	FString GetAccountUID();
+
 	UFUNCTION(BlueprintCallable)
 	void SaveBase();
 
